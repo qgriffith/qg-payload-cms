@@ -1,7 +1,7 @@
 {
   "name": "qg-payload-cms",
   "version": "1.0.0",
-  "description": "Website template for Payload",
+  "description": "Personal site based on Payload CMS",
   "license": "MIT",
   "type": "module",
   "scripts": {
