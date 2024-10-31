@@ -26,7 +26,6 @@ import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Posts } from './collections/Posts'
 import Users from './collections/Users'
-import { seedHandler } from './endpoints/seedHandler'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { revalidateRedirects } from './hooks/revalidateRedirects'
@@ -35,6 +34,8 @@ import { Page, Post } from 'src/payload-types'
 
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
+import { s3Storage } from '@payloadcms/storage-s3'
+import * as process from 'node:process'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -49,15 +50,13 @@ const generateURL: GenerateURL<Post | Page> = ({ doc }) => {
     : process.env.NEXT_PUBLIC_SERVER_URL!
 }
 
+// @ts-ignore
 export default buildConfig({
   admin: {
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below and the import `BeforeLogin` statement on line 15.
       beforeLogin: ['@/components/BeforeLogin'],
-      // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
-      // Feel free to delete this at any time. Simply remove the line below and the import `BeforeDashboard` statement on line 15.
-      beforeDashboard: ['@/components/BeforeDashboard'],
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -126,17 +125,24 @@ export default buildConfig({
   collections: [Pages, Posts, Media, Categories, Users],
   cors: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
   csrf: [process.env.PAYLOAD_PUBLIC_SERVER_URL || ''].filter(Boolean),
-  endpoints: [
-    // The seed endpoint is used to populate the database with some example data
-    // You should delete this endpoint before deploying your site to production
-    {
-      handler: seedHandler,
-      method: 'get',
-      path: '/seed',
-    },
-  ],
   globals: [Header, Footer],
   plugins: [
+    s3Storage({
+      collections: {
+        media: true,
+      },
+      //@ts-ignore
+      bucket: process.env.S3_BUCKET,
+      config: {
+        credentials: {
+          //@ts-ignore
+          accessKeyId: process.env.S3_ACCESS_KEY_ID,
+          //@ts-ignore
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        },
+        region: process.env.S3_REGION || 'us-east-1',
+      }
+    }),
     redirectsPlugin({
       collections: ['pages', 'posts'],
       overrides: {
