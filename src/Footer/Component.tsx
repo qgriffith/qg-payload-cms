@@ -1,6 +1,7 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
 import React from 'react'
+import { Logo } from '@/components/Logo/Logo'
 
 import type { Footer } from '@/payload-types'
 
@@ -17,11 +18,7 @@ export async function Footer() {
       <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
         <Link className="flex items-center" href="/">
           <picture>
-            <img
-              alt="Q-Logo"
-              className="max-h-12 max-w-[6rem] invert-0"
-              src="api/media/file/logo.png"
-            />
+            <Logo />
           </picture>
         </Link>
 
