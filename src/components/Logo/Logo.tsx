@@ -17,7 +17,7 @@ export const FooterLogo = () => {
     /* eslint-disable @next/next/no-img-element */
     <img
       alt="QGriffith Logo"
-      className="max-w-[20.375rem] max-h-[20.125rem]"
+      className="max-h-12 max-w-[6rem]"
       src="/api/media/file/logo.png"
     />
   )
