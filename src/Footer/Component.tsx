@@ -1,7 +1,7 @@
 import { getCachedGlobal } from '@/utilities/getGlobals'
 import Link from 'next/link'
 import React from 'react'
-import { Logo } from '@/components/Logo/Logo'
+import { FooterLogo } from '@/components/Logo/Logo'
 
 import type { Footer } from '@/payload-types'
 
@@ -18,7 +18,7 @@ export async function Footer() {
       <div className="container py-8 gap-8 flex flex-col md:flex-row md:justify-between">
         <Link className="flex items-center" href="/">
           <picture>
-            <Logo />
+            <FooterLogo />
           </picture>
         </Link>
 
