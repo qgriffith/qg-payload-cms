@@ -14,8 +14,8 @@ export const generateMeta = async (args: { doc: Page | Post }): Promise<Metadata
     `${process.env.NEXT_PUBLIC_SERVER_URL}${doc.meta.image.url}`
 
   const title = doc?.meta?.title
-    ? doc?.meta?.title + ' | QG-CMS'
-    : 'QG-CMS'
+    ? doc?.meta?.title + ' | Payload Website Template'
+    : 'Payload Website Template'
 
   return {
     description: doc?.meta?.description,
