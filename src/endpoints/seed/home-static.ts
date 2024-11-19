@@ -20,7 +20,7 @@ export const homeStatic: Page = {
                 format: 0,
                 mode: 'normal',
                 style: '',
-                text: 'Cat Website Template',
+                text: 'Payload Website Template',
                 version: 1,
               },
             ],
