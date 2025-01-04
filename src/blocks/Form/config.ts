@@ -1,10 +1,12 @@
 import type { Block } from 'payload'
 
 import {
+  AlignFeature, BlockquoteFeature,
+  BoldFeature, ChecklistFeature,
   FixedToolbarFeature,
-  HeadingFeature,
-  InlineToolbarFeature,
-  lexicalEditor,
+  HeadingFeature, IndentFeature,
+  InlineToolbarFeature, ItalicFeature,
+  lexicalEditor, OrderedListFeature, StrikethroughFeature, UnderlineFeature, UnorderedListFeature,
 } from '@payloadcms/richtext-lexical'
 
 export const FormBlock: Block = {
@@ -35,6 +37,16 @@ export const FormBlock: Block = {
             HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
             FixedToolbarFeature(),
             InlineToolbarFeature(),
+            UnderlineFeature(),
+            BoldFeature(),
+            ItalicFeature(),
+            StrikethroughFeature(),
+            AlignFeature(),
+            IndentFeature(),
+            UnorderedListFeature(),
+            OrderedListFeature(),
+            ChecklistFeature(),
+            BlockquoteFeature(),
           ]
         },
       }),
