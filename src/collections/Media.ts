@@ -32,8 +32,8 @@ export const Media: CollectionConfig = {
       name: 'caption',
       type: 'richText',
       editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
-          return [...rootFeatures, FixedToolbarFeature(), InlineToolbarFeature()]
+        features: ({ defaultFeatures }) => {
+          return [...defaultFeatures, FixedToolbarFeature(), InlineToolbarFeature()]
         },
       }),
     },
