@@ -8,13 +8,9 @@ import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import {
-  AlignFeature, BlockquoteFeature,
-  BoldFeature, ChecklistFeature,
   FixedToolbarFeature,
-  HeadingFeature, HorizontalRuleFeature, IndentFeature, ItalicFeature,
-  lexicalEditor, OrderedListFeature,
-  ParagraphFeature, StrikethroughFeature,
-  UnderlineFeature, UnorderedListFeature,
+  HeadingFeature,
+  lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 import { searchFields } from '@/search/fieldOverrides'
 import { beforeSyncWithSearch } from '@/search/beforeSync'
@@ -89,22 +85,10 @@ export const plugins: Plugin[] = [
             return {
               ...field,
               editor: lexicalEditor({
-                features: ({ defaultFeatures }) => {
+                features: ({ defaultFeatures, rootFeatures }) => {
                   return [
                     ...defaultFeatures,
                     FixedToolbarFeature(),
-                    ParagraphFeature(),
-                    UnderlineFeature(),
-                    BoldFeature(),
-                    ItalicFeature(),
-                    StrikethroughFeature(),
-                    AlignFeature(),
-                    IndentFeature(),
-                    UnorderedListFeature(),
-                    OrderedListFeature(),
-                    ChecklistFeature(),
-                    BlockquoteFeature(),
-                    HorizontalRuleFeature(),
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
                   ]
                 },

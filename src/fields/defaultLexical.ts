@@ -1,36 +1,13 @@
 import { Config } from 'payload'
 import {
-  BoldFeature,
-  ItalicFeature,
   LinkFeature,
-  ParagraphFeature,
   lexicalEditor,
-  UnderlineFeature,
-  StrikethroughFeature,
-  AlignFeature,
-  IndentFeature,
-  UnorderedListFeature,
-  OrderedListFeature,
-  ChecklistFeature,
-  BlockquoteFeature,
-  HorizontalRuleFeature
 } from '@payloadcms/richtext-lexical'
 
 export const defaultLexical: Config['editor'] = lexicalEditor({
-  features: () => {
+  features: ({defaultFeatures, rootFeatures}) => {
     return [
-      ParagraphFeature(),
-      UnderlineFeature(),
-      BoldFeature(),
-      ItalicFeature(),
-      StrikethroughFeature(),
-      AlignFeature(),
-      IndentFeature(),
-      UnorderedListFeature(),
-      OrderedListFeature(),
-      ChecklistFeature(),
-      BlockquoteFeature(),
-      HorizontalRuleFeature(),
+      ...defaultFeatures,
       LinkFeature({
         enabledCollections: ['pages', 'posts'],
         fields: ({ defaultFields }) => {
