@@ -1,13 +1,12 @@
 import type { CollectionConfig } from 'payload'
 
 import {
-  AlignFeature, BlockquoteFeature,
-  BlocksFeature, BoldFeature, ChecklistFeature,
+  BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
-  HorizontalRuleFeature, IndentFeature,
-  InlineToolbarFeature, ItalicFeature,
-  lexicalEditor, OrderedListFeature, StrikethroughFeature, UnderlineFeature, UnorderedListFeature,
+  HorizontalRuleFeature,
+  InlineToolbarFeature,
+  lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
 import { authenticated } from '../../access/authenticated'
@@ -17,7 +16,7 @@ import { Code } from '../../blocks/Code/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
-import { revalidatePost } from './hooks/revalidatePost'
+import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
 
 import {
   MetaDescriptionField,
@@ -28,7 +27,7 @@ import {
 } from '@payloadcms/plugin-seo/fields'
 import { slugField } from '@/fields/slug'
 
-export const Posts: CollectionConfig = {
+export const Posts: CollectionConfig<'posts'> = {
   slug: 'posts',
   access: {
     create: authenticated,
@@ -36,26 +35,37 @@ export const Posts: CollectionConfig = {
     read: authenticatedOrPublished,
     update: authenticated,
   },
+  // This config controls what's populated by default when a post is referenced
+  // https://payloadcms.com/docs/queries/select#defaultpopulate-collection-config-property
+  // Type safe if the collection slug generic is passed to `CollectionConfig` - `CollectionConfig<'posts'>
+  defaultPopulate: {
+    title: true,
+    slug: true,
+    categories: true,
+    meta: {
+      image: true,
+      description: true,
+    },
+  },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
     livePreview: {
-      url: ({ data }) => {
+      url: ({ data, req }) => {
         const path = generatePreviewPath({
           slug: typeof data?.slug === 'string' ? data.slug : '',
           collection: 'posts',
+          req,
         })
 
-        return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
+        return path
       },
     },
-    preview: (data) => {
-      const path = generatePreviewPath({
+    preview: (data, { req }) =>
+      generatePreviewPath({
         slug: typeof data?.slug === 'string' ? data.slug : '',
         collection: 'posts',
-      })
-
-      return `${process.env.NEXT_PUBLIC_SERVER_URL}${path}`
-    },
+        req,
+      }),
     useAsTitle: 'title',
   },
   fields: [
@@ -70,27 +80,22 @@ export const Posts: CollectionConfig = {
         {
           fields: [
             {
+              name: 'heroImage',
+              type: 'upload',
+              relationTo: 'media',
+            },
+            {
               name: 'content',
               type: 'richText',
               editor: lexicalEditor({
-                features: ({ defaultFeatures }) => {
+                features: ({ rootFeatures }) => {
                   return [
-                    ...defaultFeatures,
+                    ...rootFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
                     BlocksFeature({ blocks: [Banner, Code, MediaBlock] }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),
-                    UnderlineFeature(),
-                    BoldFeature(),
-                    ItalicFeature(),
-                    StrikethroughFeature(),
-                    AlignFeature(),
-                    IndentFeature(),
-                    UnorderedListFeature(),
-                    OrderedListFeature(),
-                    ChecklistFeature(),
-                    BlockquoteFeature(),
                   ]
                 },
               }),
@@ -217,12 +222,14 @@ export const Posts: CollectionConfig = {
   hooks: {
     afterChange: [revalidatePost],
     afterRead: [populateAuthors],
+    afterDelete: [revalidateDelete],
   },
   versions: {
     drafts: {
       autosave: {
         interval: 100, // We set this interval for optimal live preview
       },
+      schedulePublish: true,
     },
     maxPerDoc: 50,
   },
